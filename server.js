@@ -10,7 +10,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "20mb" }));
 app.use(express.static(path.join(__dirname, "public")));
 
 const PORT = process.env.PORT || 10000;
@@ -29,14 +29,14 @@ app.post("/optimize", async (req, res) => {
         messages: [
           {
             role: "user",
-            content: `You are an expert at writing prompts for image generation. Rewrite the following description into a detailed, cinematic image generation prompt. Return ONLY the improved prompt, nothing else.\n\n${req.body.prompt}`
+            content: "You are an expert at writing prompts for image generation. Rewrite the following description into a detailed, cinematic image generation prompt. Return ONLY the improved prompt, nothing else.\n\n" + req.body.prompt
           }
         ],
         max_tokens: 300
       },
       {
         headers: {
-          Authorization: `Bearer ${HF_TOKEN}`
+          Authorization: "Bearer " + HF_TOKEN
         }
       }
     );
@@ -53,18 +53,44 @@ app.post("/optimize", async (req, res) => {
 
 app.post("/generate-image", async (req, res) => {
   try {
-    const response = await axios.post(
-      "https://router.huggingface.co/hf-inference/models/stabilityai/stable-diffusion-xl-base-1.0",
-      { inputs: req.body.prompt },
-      {
-        headers: {
-          Authorization: `Bearer ${HF_TOKEN}`,
-          Accept: "image/png"
-        },
-        responseType: "arraybuffer",
-        timeout: 120000
-      }
-    );
+    const { prompt, image, integrate } = req.body;
+
+    let response;
+
+    if (image && integrate) {
+      const imageBuffer = Buffer.from(image, "base64");
+
+      response = await axios.post(
+        "https://router.huggingface.co/hf-inference/models/stabilityai/stable-diffusion-xl-refiner-1.0",
+        imageBuffer,
+        {
+          headers: {
+            Authorization: "Bearer " + HF_TOKEN,
+            Accept: "image/png",
+            "Content-Type": "application/octet-stream",
+            "x-use-cache": "false"
+          },
+          params: {
+            prompt: prompt
+          },
+          responseType: "arraybuffer",
+          timeout: 120000
+        }
+      );
+    } else {
+      response = await axios.post(
+        "https://router.huggingface.co/hf-inference/models/stabilityai/stable-diffusion-xl-base-1.0",
+        { inputs: prompt },
+        {
+          headers: {
+            Authorization: "Bearer " + HF_TOKEN,
+            Accept: "image/png"
+          },
+          responseType: "arraybuffer",
+          timeout: 120000
+        }
+      );
+    }
 
     const base64 = Buffer.from(response.data).toString("base64");
     res.json({ image: base64 });
@@ -84,5 +110,5 @@ app.post("/generate-image", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log("Server running on port " + PORT);
 });
