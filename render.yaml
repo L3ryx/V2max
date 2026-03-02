@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: nano-banana-ai
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: HF_TOKEN
+        sync: false
