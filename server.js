@@ -23,9 +23,8 @@ app.get("/", (req, res) => {
 app.post("/optimize", async (req, res) => {
   try {
     const response = await axios.post(
-      "https://router.huggingface.co/v1/chat/completions",
+      "https://router.huggingface.co/hf-inference/models/meta-llama/Meta-Llama-3-8B-Instruct/v1/chat/completions",
       {
-        model: "meta-llama/Meta-Llama-3-8B-Instruct",
         messages: [
           {
             role: "user",
@@ -45,8 +44,9 @@ app.post("/optimize", async (req, res) => {
       optimized: response.data.choices[0].message.content
     });
   } catch (error) {
-    console.error("LLAMA error:", error.response?.data || error.message);
-    res.status(500).json({ error: "Erreur LLaMA" });
+    const detail = error.response?.data?.error || error.response?.data || error.message;
+    console.error("LLAMA error:", detail);
+    res.status(500).json({ error: "Erreur LLaMA : " + (typeof detail === "string" ? detail : JSON.stringify(detail)) });
   }
 });
 
@@ -67,8 +67,17 @@ app.post("/generate-image", async (req, res) => {
     const base64 = Buffer.from(response.data).toString("base64");
     res.json({ image: base64 });
   } catch (error) {
-    console.error("Image error:", error.response?.data || error.message);
-    res.status(500).json({ error: "Erreur génération image" });
+    let detail = error.message;
+    if (error.response?.data) {
+      try {
+        const text = Buffer.from(error.response.data).toString("utf-8");
+        detail = text;
+      } catch (e) {
+        detail = error.response?.data?.error || error.message;
+      }
+    }
+    console.error("Image error:", detail);
+    res.status(500).json({ error: "Erreur image : " + detail });
   }
 });
 
