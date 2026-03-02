@@ -3,449 +3,294 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nano Banana AI</title>
+<title>Nano Banana Tropical AI</title>
+
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+
+/* ========================= */
+/* GLOBAL */
+/* ========================= */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
 }
 
-body {
-  font-family: 'Segoe UI', Arial, sans-serif;
-  background: linear-gradient(135deg, #0b3d02 0%, #1a5e0a 30%, #0d4a03 60%, #145209 100%);
-  text-align: center;
-  color: white;
-  min-height: 100vh;
-  overflow-x: hidden;
-  position: relative;
+body{
+font-family:Arial, sans-serif;
+background: linear-gradient(to bottom,#0b3d02,#145c0a,#1b7a14);
+color:white;
+text-align:center;
+overflow-x:hidden;
+min-height:100vh;
+position:relative;
 }
 
-#bg-foliage {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
-  overflow: hidden;
+/* ========================= */
+/* 🌞 SUN ANIMATION */
+/* ========================= */
+
+.sun{
+position:fixed;
+top:-100px;
+right:-100px;
+width:400px;
+height:400px;
+background:radial-gradient(circle,#ffd000 0%,#ff8c00 40%,transparent 70%);
+border-radius:50%;
+filter:blur(40px);
+animation:sunPulse 6s infinite alternate;
+z-index:0;
 }
 
-.leaf {
-  position: absolute;
-  opacity: 0.15;
-  filter: blur(1px);
+@keyframes sunPulse{
+0%{transform:scale(1);}
+100%{transform:scale(1.2);}
 }
 
-.leaf svg {
-  fill: #2ecc40;
+/* ========================= */
+/* 🌴 PALMIERS */
+/* ========================= */
+
+.palm{
+position:fixed;
+bottom:0;
+width:220px;
+opacity:0.8;
+animation:sway 6s infinite ease-in-out alternate;
+z-index:1;
 }
 
-.leaf-1 { top: -30px; left: -40px; transform: rotate(-20deg); opacity: 0.2; }
-.leaf-2 { top: -20px; right: -30px; transform: rotate(30deg) scaleX(-1); opacity: 0.18; }
-.leaf-3 { bottom: -40px; left: 10%; transform: rotate(160deg); opacity: 0.12; }
-.leaf-4 { bottom: -20px; right: 5%; transform: rotate(-150deg) scaleX(-1); opacity: 0.15; }
-.leaf-5 { top: 30%; left: -20px; transform: rotate(40deg); opacity: 0.08; }
-.leaf-6 { top: 40%; right: -30px; transform: rotate(-30deg) scaleX(-1); opacity: 0.1; }
+.palm.left{left:0;}
+.palm.right{right:0;}
 
-#bananas-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1;
-  overflow: hidden;
+@keyframes sway{
+0%{transform:rotate(-4deg);}
+100%{transform:rotate(4deg);}
 }
 
-.banana {
-  position: absolute;
-  font-size: 40px;
-  opacity: 0.6;
-  animation: bananaFloat linear infinite;
-  will-change: transform;
+/* ========================= */
+/* 🍃 FEUILLES QUI TOMBENT */
+/* ========================= */
+
+.leaf{
+position:fixed;
+font-size:22px;
+opacity:0.6;
+animation:fall linear infinite;
 }
 
-@keyframes bananaFloat {
-  0% {
-    transform: translateY(110vh) rotate(0deg);
-  }
-  100% {
-    transform: translateY(-10vh) rotate(360deg);
-  }
+@keyframes fall{
+0%{transform:translateY(-10vh) rotate(0deg);}
+100%{transform:translateY(110vh) rotate(360deg);}
 }
 
-.container {
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  padding: 45px 40px;
-  border-radius: 30px;
-  width: 85%;
-  max-width: 720px;
-  margin: 80px auto 40px;
-  box-shadow: 0 8px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  position: relative;
-  z-index: 10;
+/* ========================= */
+/* 🍌 BANANES VOLANTES */
+/* ========================= */
+
+.banana{
+position:fixed;
+font-size:35px;
+animation:bananaMove linear infinite;
+z-index:2;
 }
 
-.title-3d {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 3px;
-  margin-bottom: 30px;
-  perspective: 600px;
-  flex-wrap: wrap;
-  width: 100%;
+@keyframes bananaMove{
+0%{transform:translateX(-10vw) translateY(100vh) rotate(0deg);}
+100%{transform:translateX(110vw) translateY(-10vh) rotate(720deg);}
 }
 
-.title-3d .letter {
-  display: inline-block;
-  font-size: clamp(24px, 6vw, 48px);
-  font-weight: 900;
-  color: #fff;
-  text-shadow:
-    0 1px 0 #ccc,
-    0 2px 0 #bbb,
-    0 3px 0 #aaa,
-    0 4px 0 #999,
-    0 5px 0 #888,
-    0 6px 6px rgba(0,0,0,0.4),
-    0 0 20px rgba(255,165,0,0.3);
-  animation: letterSpin 3s ease-in-out infinite;
-  transform-style: preserve-3d;
-  line-height: 1.2;
+/* ========================= */
+/* CONTAINER */
+/* ========================= */
+
+.container{
+position:relative;
+z-index:10;
+width:90%;
+max-width:750px;
+margin:80px auto;
+padding:50px;
+border-radius:30px;
+background:rgba(0,0,0,0.55);
+backdrop-filter:blur(20px);
+box-shadow:0 0 80px rgba(0,0,0,0.8);
+border:1px solid rgba(255,255,255,0.1);
 }
 
-.title-3d .letter.space {
-  width: clamp(8px, 2vw, 16px);
+/* ========================= */
+/* TITLE */
+/* ========================= */
+
+h1{
+font-size:42px;
+margin-bottom:30px;
+color:#fff;
+text-shadow:0 0 20px orange;
+animation:glow 3s infinite alternate;
 }
 
-@keyframes letterSpin {
-  0%, 100% {
-    transform: rotateY(0deg);
-  }
-  50% {
-    transform: rotateY(360deg);
-  }
+@keyframes glow{
+0%{text-shadow:0 0 10px orange;}
+100%{text-shadow:0 0 40px yellow;}
 }
 
-textarea {
-  width: 92%;
-  height: 120px;
-  border-radius: 18px;
-  padding: 16px 20px;
-  border: 2px solid rgba(255, 165, 0, 0.3);
-  font-size: 16px;
-  resize: none;
-  background: rgba(255, 255, 255, 0.95);
-  color: #333;
-  transition: border-color 0.3s, box-shadow 0.3s;
-  outline: none;
+/* ========================= */
+/* INPUT */
+/* ========================= */
+
+textarea{
+width:100%;
+height:120px;
+border-radius:20px;
+padding:20px;
+border:none;
+outline:none;
+font-size:16px;
+resize:none;
 }
 
-textarea:focus {
-  border-color: #ff8c00;
-  box-shadow: 0 0 20px rgba(255, 140, 0, 0.3);
+/* ========================= */
+/* BUTTONS */
+/* ========================= */
+
+button{
+background:#ff9800;
+color:white;
+padding:14px 28px;
+border:none;
+border-radius:50px;
+font-weight:bold;
+cursor:pointer;
+transition:0.3s;
+margin:10px;
+box-shadow:0 5px 20px rgba(0,0,0,0.4);
 }
 
-textarea::placeholder {
-  color: #999;
+button:hover{
+transform:translateY(-4px);
+background:#ff6f00;
 }
 
-.buttons {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  flex-wrap: wrap;
+/* ========================= */
+/* IMAGE */
+/* ========================= */
+
+#image{
+max-width:100%;
+border-radius:20px;
+margin-top:20px;
+display:none;
+box-shadow:0 0 40px black;
 }
 
-button {
-  background: linear-gradient(135deg, #ff8c00, #ff6600);
-  color: white;
-  padding: 14px 30px;
-  border: none;
-  border-radius: 50px;
-  cursor: pointer;
-  font-size: 17px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  box-shadow: 0 4px 15px rgba(255, 102, 0, 0.4), 0 2px 4px rgba(0,0,0,0.2);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
+.loader{
+display:none;
+margin-top:20px;
+color:yellow;
 }
 
-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  transition: left 0.5s;
-}
-
-button:hover::before {
-  left: 100%;
-}
-
-button:hover {
-  background: linear-gradient(135deg, #ffa033, #ff7711);
-  box-shadow: 0 6px 25px rgba(255, 102, 0, 0.6), 0 3px 8px rgba(0,0,0,0.3);
-  transform: translateY(-2px);
-}
-
-button:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(255, 102, 0, 0.4);
-}
-
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-#image {
-  margin-top: 25px;
-  max-width: 100%;
-  border-radius: 20px;
-  display: none;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-  border: 3px solid rgba(255, 165, 0, 0.3);
-}
-
-.loader {
-  display: none;
-  margin-top: 25px;
-  text-align: center;
-}
-
-.loader-text {
-  color: #ffd700;
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 12px;
-  animation: pulse 1.5s ease-in-out infinite;
-}
-
-.progress-bar-container {
-  width: 100%;
-  height: 10px;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 10px;
-  overflow: hidden;
-  position: relative;
-}
-
-.progress-bar {
-  height: 100%;
-  width: 30%;
-  background: linear-gradient(90deg, #ff0000, #ff4444, #ff0000);
-  border-radius: 10px;
-  animation: progressSlide 1.8s ease-in-out infinite;
-  box-shadow: 0 0 12px rgba(255, 0, 0, 0.6), 0 0 4px rgba(255, 0, 0, 0.4);
-}
-
-@keyframes progressSlide {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(430%); }
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-.error {
-  color: #ff6b6b;
-  margin-top: 12px;
-  display: none;
-  font-weight: 600;
-  background: rgba(255, 0, 0, 0.1);
-  padding: 10px 15px;
-  border-radius: 10px;
-}
-
-@media (max-width: 600px) {
-  .container {
-    width: 92%;
-    padding: 25px 20px;
-    margin-top: 40px;
-  }
-  .title-3d .letter {
-    font-size: clamp(20px, 5vw, 28px);
-  }
-  button {
-    padding: 12px 22px;
-    font-size: 15px;
-  }
-}
 </style>
 </head>
 <body>
 
-<div id="bg-foliage">
-  <div class="leaf leaf-1">
-    <svg width="250" height="250" viewBox="0 0 100 100"><path d="M10 90 Q20 50 50 30 Q60 10 80 5 Q70 25 65 45 Q90 30 95 10 Q85 40 70 55 Q80 60 95 55 Q75 65 60 65 Q55 80 60 95 Q45 75 40 60 Q25 70 10 90Z"/></svg>
-  </div>
-  <div class="leaf leaf-2">
-    <svg width="280" height="280" viewBox="0 0 100 100"><path d="M10 90 Q20 50 50 30 Q60 10 80 5 Q70 25 65 45 Q90 30 95 10 Q85 40 70 55 Q80 60 95 55 Q75 65 60 65 Q55 80 60 95 Q45 75 40 60 Q25 70 10 90Z"/></svg>
-  </div>
-  <div class="leaf leaf-3">
-    <svg width="200" height="200" viewBox="0 0 100 100"><path d="M10 90 Q20 50 50 30 Q60 10 80 5 Q70 25 65 45 Q90 30 95 10 Q85 40 70 55 Q80 60 95 55 Q75 65 60 65 Q55 80 60 95 Q45 75 40 60 Q25 70 10 90Z"/></svg>
-  </div>
-  <div class="leaf leaf-4">
-    <svg width="220" height="220" viewBox="0 0 100 100"><path d="M10 90 Q20 50 50 30 Q60 10 80 5 Q70 25 65 45 Q90 30 95 10 Q85 40 70 55 Q80 60 95 55 Q75 65 60 65 Q55 80 60 95 Q45 75 40 60 Q25 70 10 90Z"/></svg>
-  </div>
-  <div class="leaf leaf-5">
-    <svg width="180" height="180" viewBox="0 0 100 100"><path d="M10 90 Q20 50 50 30 Q60 10 80 5 Q70 25 65 45 Q90 30 95 10 Q85 40 70 55 Q80 60 95 55 Q75 65 60 65 Q55 80 60 95 Q45 75 40 60 Q25 70 10 90Z"/></svg>
-  </div>
-  <div class="leaf leaf-6">
-    <svg width="240" height="240" viewBox="0 0 100 100"><path d="M10 90 Q20 50 50 30 Q60 10 80 5 Q70 25 65 45 Q90 30 95 10 Q85 40 70 55 Q80 60 95 55 Q75 65 60 65 Q55 80 60 95 Q45 75 40 60 Q25 70 10 90Z"/></svg>
-  </div>
-</div>
+<!-- SUN -->
+<div class="sun"></div>
 
-<div id="bananas-container"></div>
+<!-- PALMIERS -->
+<img src="https://i.imgur.com/6X9ZJ5L.png" class="palm left">
+<img src="https://i.imgur.com/6X9ZJ5L.png" class="palm right">
 
 <div class="container">
-  <div class="title-3d" id="title">
-    <span class="letter" style="animation-delay:0s">N</span>
-    <span class="letter" style="animation-delay:0.15s">a</span>
-    <span class="letter" style="animation-delay:0.3s">n</span>
-    <span class="letter" style="animation-delay:0.45s">o</span>
-    <span class="letter space"></span>
-    <span class="letter" style="animation-delay:0.6s">B</span>
-    <span class="letter" style="animation-delay:0.75s">a</span>
-    <span class="letter" style="animation-delay:0.9s">n</span>
-    <span class="letter" style="animation-delay:1.05s">a</span>
-    <span class="letter" style="animation-delay:1.2s">n</span>
-    <span class="letter" style="animation-delay:1.35s">a</span>
-    <span class="letter space"></span>
-    <span class="letter" style="animation-delay:1.5s">A</span>
-    <span class="letter" style="animation-delay:1.65s">I</span>
-  </div>
 
-  <textarea id="prompt" placeholder="Décris ton image..."></textarea>
+<h1>🍌🌴 Nano Banana Tropical AI 🌴🍌</h1>
 
-  <div class="buttons">
-    <button id="btnOptimize" onclick="optimize()">🦙 Optimiser</button>
-    <button id="btnGenerate" onclick="generate()">🍌 Générer</button>
-  </div>
+<textarea id="prompt" placeholder="Décris ton image tropicale..."></textarea>
 
-  <div class="loader" id="loader">
-    <div class="loader-text" id="loader-text">Chargement...</div>
-    <div class="progress-bar-container">
-      <div class="progress-bar"></div>
-    </div>
-  </div>
-  <div class="error" id="error"></div>
+<br>
 
-  <img id="image" alt="Image générée"/>
+<button onclick="optimize()">🦙 Optimiser</button>
+<button onclick="generate()">🚀 Générer</button>
+
+<div class="loader" id="loader">⏳ Génération...</div>
+
+<img id="image"/>
+
 </div>
 
 <script>
-(function initBananas() {
-  const container = document.getElementById("bananas-container");
-  const count = 12;
-  for (let i = 0; i < count; i++) {
-    const banana = document.createElement("div");
-    banana.classList.add("banana");
-    banana.textContent = "🍌";
-    const size = 25 + Math.random() * 30;
-    banana.style.fontSize = size + "px";
-    banana.style.left = Math.random() * 100 + "%";
-    banana.style.opacity = 0.2 + Math.random() * 0.4;
-    const duration = 15 + Math.random() * 25;
-    banana.style.animationDuration = duration + "s";
-    banana.style.animationDelay = -(Math.random() * duration) + "s";
-    container.appendChild(banana);
-  }
-})();
 
-async function optimize() {
-  const promptEl = document.getElementById("prompt");
-  const prompt = promptEl.value.trim();
-  if (!prompt) return alert("Entre une description d'abord.");
+/* ========================= */
+/* FEUILLES AUTOMATIQUES */
+/* ========================= */
 
-  const loader = document.getElementById("loader");
-  const error = document.getElementById("error");
-  const btn = document.getElementById("btnOptimize");
-
-  document.getElementById("loader-text").textContent = "Optimisation du prompt...";
-  loader.style.display = "block";
-  error.style.display = "none";
-  btn.disabled = true;
-
-  try {
-    const res = await fetch("/optimize", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt })
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) throw new Error(data.error || "Erreur serveur");
-
-    if (data.optimized) {
-      promptEl.value = data.optimized;
-    }
-  } catch (e) {
-    error.textContent = "Erreur optimisation : " + e.message;
-    error.style.display = "block";
-  } finally {
-    loader.style.display = "none";
-    btn.disabled = false;
-  }
+for(let i=0;i<25;i++){
+const leaf=document.createElement("div");
+leaf.classList.add("leaf");
+leaf.innerHTML="🍃";
+leaf.style.left=Math.random()*100+"vw";
+leaf.style.animationDuration=(5+Math.random()*10)+"s";
+leaf.style.animationDelay="-"+Math.random()*10+"s";
+document.body.appendChild(leaf);
 }
 
-async function generate() {
-  const prompt = document.getElementById("prompt").value.trim();
-  if (!prompt) return alert("Entre une description d'abord.");
+/* ========================= */
+/* BANANES ANIMEES */
+/* ========================= */
 
-  const loader = document.getElementById("loader");
-  const error = document.getElementById("error");
-  const img = document.getElementById("image");
-  const btn = document.getElementById("btnGenerate");
-
-  document.getElementById("loader-text").textContent = "Génération de l'image... (30-60 secondes)";
-  loader.style.display = "block";
-  error.style.display = "none";
-  img.style.display = "none";
-  btn.disabled = true;
-
-  try {
-    const res = await fetch("/generate-image", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt })
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) throw new Error(data.error || "Erreur serveur");
-
-    if (data.image) {
-      img.src = "data:image/png;base64," + data.image;
-      img.style.display = "block";
-    }
-  } catch (e) {
-    error.textContent = "Erreur génération : " + e.message;
-    error.style.display = "block";
-  } finally {
-    loader.style.display = "none";
-    btn.disabled = false;
-  }
+for(let i=0;i<15;i++){
+const banana=document.createElement("div");
+banana.classList.add("banana");
+banana.innerHTML="🍌";
+banana.style.top=Math.random()*100+"vh";
+banana.style.animationDuration=(8+Math.random()*15)+"s";
+banana.style.animationDelay="-"+Math.random()*10+"s";
+document.body.appendChild(banana);
 }
+
+/* ========================= */
+/* API */
+/* ========================= */
+
+async function optimize(){
+const prompt=document.getElementById("prompt").value;
+
+const res=await fetch("/optimize",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({prompt})
+});
+
+const data=await res.json();
+if(data.optimized){
+document.getElementById("prompt").value=data.optimized;
+}
+}
+
+async function generate(){
+const prompt=document.getElementById("prompt").value;
+
+document.getElementById("loader").style.display="block";
+document.getElementById("image").style.display="none";
+
+const res=await fetch("/generate-image",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({prompt})
+});
+
+const data=await res.json();
+
+if(data.image){
+document.getElementById("image").src="data:image/png;base64,"+data.image;
+document.getElementById("image").style.display="block";
+}
+
+document.getElementById("loader").style.display="none";
+}
+
 </script>
 
 </body>
