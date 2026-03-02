@@ -58,7 +58,8 @@ app.post("/generate-image", async (req, res) => {
       { inputs: req.body.prompt },
       {
         headers: {
-          Authorization: `Bearer ${HF_TOKEN}`
+          Authorization: `Bearer ${HF_TOKEN}`,
+          Accept: "image/png"
         },
         responseType: "arraybuffer",
         timeout: 120000
