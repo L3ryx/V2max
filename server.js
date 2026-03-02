@@ -23,8 +23,9 @@ app.get("/", (req, res) => {
 app.post("/optimize", async (req, res) => {
   try {
     const response = await axios.post(
-      "https://router.huggingface.co/hf-inference/models/meta-llama/Meta-Llama-3-8B-Instruct/v1/chat/completions",
+      "https://router.huggingface.co/v1/chat/completions",
       {
+        model: "meta-llama/Meta-Llama-3-8B-Instruct",
         messages: [
           {
             role: "user",
