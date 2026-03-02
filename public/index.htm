@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nano Banana AI</title>
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0b3d02;
+  text-align: center;
+  color: white;
+  min-height: 100vh;
+}
+
+.container {
+  background: rgba(0,0,0,0.6);
+  padding: 40px;
+  border-radius: 25px;
+  width: 80%;
+  max-width: 700px;
+  margin: 60px auto;
+  box-shadow: 0 0 40px black;
+}
+
+textarea {
+  width: 90%;
+  height: 120px;
+  border-radius: 15px;
+  padding: 15px;
+  border: none;
+  font-size: 16px;
+  resize: none;
+  box-sizing: border-box;
+}
+
+button {
+  background: red;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  margin: 10px;
+  font-size: 16px;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#image {
+  margin-top: 20px;
+  max-width: 100%;
+  border-radius: 20px;
+  display: none;
+}
+
+.loader {
+  display: none;
+  margin-top: 20px;
+  color: yellow;
+  font-size: 18px;
+}
+
+.error {
+  color: #ff6b6b;
+  margin-top: 10px;
+  display: none;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🔥 Nano Banana AI</h1>
+
+  <textarea id="prompt" placeholder="Décris ton image..."></textarea>
+  <br>
+
+  <button id="btnOptimize" onclick="optimize()">🦙 Optimiser</button>
+  <button id="btnGenerate" onclick="generate()">🍌 Générer</button>
+
+  <div class="loader" id="loader">⏳ Chargement...</div>
+  <div class="error" id="error"></div>
+
+  <img id="image" alt="Image générée"/>
+</div>
+
+<script>
+async function optimize() {
+  const promptEl = document.getElementById("prompt");
+  const prompt = promptEl.value.trim();
+  if (!prompt) return alert("Entre une description d'abord.");
+
+  const loader = document.getElementById("loader");
+  const error = document.getElementById("error");
+  const btn = document.getElementById("btnOptimize");
+
+  loader.textContent = "⏳ Optimisation...";
+  loader.style.display = "block";
+  error.style.display = "none";
+  btn.disabled = true;
+
+  try {
+    const res = await fetch("/optimize", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.error || "Erreur serveur");
+
+    if (data.optimized) {
+      promptEl.value = data.optimized;
+    }
+  } catch (e) {
+    error.textContent = "Erreur optimisation : " + e.message;
+    error.style.display = "block";
+  } finally {
+    loader.style.display = "none";
+    btn.disabled = false;
+  }
+}
+
+async function generate() {
+  const prompt = document.getElementById("prompt").value.trim();
+  if (!prompt) return alert("Entre une description d'abord.");
+
+  const loader = document.getElementById("loader");
+  const error = document.getElementById("error");
+  const img = document.getElementById("image");
+  const btn = document.getElementById("btnGenerate");
+
+  loader.textContent = "⏳ Génération de l'image... (30-60 secondes)";
+  loader.style.display = "block";
+  error.style.display = "none";
+  img.style.display = "none";
+  btn.disabled = true;
+
+  try {
+    const res = await fetch("/generate-image", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.error || "Erreur serveur");
+
+    if (data.image) {
+      img.src = "data:image/png;base64," + data.image;
+      img.style.display = "block";
+    }
+  } catch (e) {
+    error.textContent = "Erreur génération : " + e.message;
+    error.style.display = "block";
+  } finally {
+    loader.style.display = "none";
+    btn.disabled = false;
+  }
+}
+</script>
+
+</body>
+</html>
