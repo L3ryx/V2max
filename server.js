@@ -61,20 +61,20 @@ app.post("/generate-image", async (req, res) => {
       const imageBuffer = Buffer.from(image, "base64");
 
       response = await axios.post(
-        "https://router.huggingface.co/hf-inference/models/stabilityai/stable-diffusion-xl-refiner-1.0",
+        "https://router.huggingface.co/fal-ai/models/Qwen/Qwen-Image-Edit-2511",
         imageBuffer,
         {
           headers: {
             Authorization: "Bearer " + HF_TOKEN,
             Accept: "image/png",
-            "Content-Type": "application/octet-stream",
+            "Content-Type": "image/png",
             "x-use-cache": "false"
           },
           params: {
             prompt: prompt
           },
           responseType: "arraybuffer",
-          timeout: 120000
+          timeout: 180000
         }
       );
     } else {
