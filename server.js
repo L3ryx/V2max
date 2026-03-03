@@ -18,7 +18,6 @@ const HF_TOKEN = process.env.HF_TOKEN;
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
-});
 
 app.post("/optimize", async (req, res) => {
   try {
